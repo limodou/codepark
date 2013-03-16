@@ -1,0 +1,78 @@
+{{extend "layout.html"}}
+
+{{block before_header}}
+{{super}}
+{{include "inc_jquery_csrf.html"}}
+{{use "bootheme"}}
+{{end}}
+
+{{block user_info}}
+<style>
+#userinfo.btn-toolbar {margin-top:0;margin-bottom:0;font-size:14px;}
+#userinfo.btn-toolbar a{vertical-align:middle;}
+#userinfo img {
+-webkit-border-radius: 3px;
+   -moz-border-radius: 3px;
+        border-radius: 3px;
+}
+#userinfo [class^="icon-"], #userinfo [class*=" icon-"], #userinfo [class^="icon-"]:hover, #userinfo [class*=" icon-"]:hover{
+    vertical-align:middle;
+    margin-bottom:3px;
+}
+</style>
+    {{use 'poshytip'}}
+
+    {{if hasattr(request, 'user') and request.user:}}
+      <div id="userinfo" class="btn-toolbar pull-right userinfo">
+        <div class="btn-group">
+          <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+            <img id="user_image" src="{{=functions.get_user_image(request.user, size=20)}}" align="top"/> {{=unicode(request.user)}} 
+            <b class="caret"></b></a><span style="padding-right:40px;"></span>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+            <li><a href="/admin/messages/list" target="_blank" id=""><i class="icon-envelope"></i> 收到的消息</a></li>
+            <li class="divider"></li>
+            <li><a href="/logout"><i class="icon-off"></i> {{=_('Logout')}}</a></li>
+          </ul>
+        </div>
+      </div>
+    {{else:}}
+        <p class="pull-right user_info">
+            <a href="/login">登录</a> | <a href="/register">注册</a>
+        </p>
+    {{pass}}
+
+    {{block message_number_show}}
+        {{if request.user:}}
+        <script type="text/javascript">
+        function query() {
+            $.ajax({
+                type: "POST",
+                url: "/admin/messages/number",
+                success: function(r){
+                    if (r.success && r.data>0){
+                        $('#user_image').poshytip('update', r.data+' 条新消息，<a href="/admin/messages/list">点击查看</a>');
+                        $('#user_image').poshytip('show');
+                    }
+                    setTimeout(query, {{=settings.LAYOUT.MESSAGE_REFRESH_INTERVAL}});
+                }
+            });
+        }    
+        $(function(){
+            $('#user_image').poshytip({
+              className: 'tip-yellowsimple',
+              content: '0 条新消息，<a href="/admin/messages/list">点击查看</a>',
+              showOn: 'none',
+              alignTo: 'fixed',
+              alignX: 'center',
+              alignY: 'bottom',
+              offsetX: 0,
+              offsetY: 5,
+              closeButton: true
+            });
+            
+            setTimeout(query, 1000);
+        });
+        </script>
+        {{pass}}
+    {{end}}
+{{end user_info}}

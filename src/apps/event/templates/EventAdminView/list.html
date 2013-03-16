@@ -1,0 +1,182 @@
+{{extend "event_layout.html"}}
+
+{{block content_main}}
+{{use "fontawesome"}}
+{{use "bootheme"}}
+{{use "jqutils", ajaxForm=True}}
+
+{{include "inc_jquery_dialog2.html"}}
+
+
+<div class="line">
+    <a class="btn btn-primary" href="/admin/event/add" data-click="add"><i class="icon-plus icon-white"></i>{{=_('Add')}}</a>
+</div>
+
+
+<div class="query">
+    {{<< query_form}}
+</div>
+
+
+<!-- Style 1 -->
+{{##---------------------------------
+{{<< table}}
+----------------------------------##}}
+
+<!-- Style 2 -->
+{{##---------------------------------
+{{<< table.begin}}
+{{<< table.colgroup}}
+{{<< table.head}}
+{{<< table.body}}
+{{<< table.end}}
+----------------------------------##}}
+
+<!-- Style 3 -->
+{{##---------------------------------
+<table class="table table-bordered table-header">
+{{<< table.colgroup}}
+{{<< table.head}}
+{{<< table.body}}
+</table>
+----------------------------------##}}
+
+<!-- Style 4 -->
+<table class="table table-bordered table-header">
+    <colgroup>
+        {{for f in view.table_info['fields_list']:}}
+            {{if f.get('hidden', False):}}
+                {{continue}}
+            {{pass}}
+            {{w = f.get('width', -1)}}
+            {{if isinstance(w, int):}}
+                {{if w > -1:}}
+                    <col width="{{=w}}px"></col>
+                {{else:}}
+                    <col width="*"></col>
+                {{pass}}
+            {{else:}}
+                <col width="{{=w}}"></col>
+            {{pass}}
+        {{pass}}
+        <col width="70px"></col>
+    </colgroup>
+    <thead>
+        <tr>
+            {{for f in view.table_info['fields_list']:}}
+                {{if f.get('hidden', False):}}
+                    {{continue}}
+                {{pass}}
+                <th>{{=f.get('verbose_name') or f['name']}}</th>
+            {{pass}}
+            <th>{{=_('Action')}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{for obj in view.objects():}}
+        <tr>
+            {{for f in view.table_info['fields_list']:}}
+                {{if f.get('hidden', False):}}
+                    {{continue}}
+                {{pass}}
+                <td>{{<< obj[ f['name'] ] }}</td>
+            {{pass}}
+            <td>
+                <a href="/admin/event/view/{{=obj['_obj_'].id}}" data-click="view"><i class="icon-eye-open" title="{{=_('View')}}"></i></a> 
+                <a href="/admin/event/edit/{{=obj['_obj_'].id}}" data-click="edit"><i class="icon-edit" title="{{=_('Edit')}}"></i></a> 
+                <a href="/admin/event/delete/{{=obj['_obj_'].id}}" data-click="delete"><i class="icon-remove" title="{{=_('Remove')}}"></i></a>
+            </td>
+        </tr>
+        {{pass}}
+    </tbody>
+</table>
+<div class="pagination pagination-centered">{{<<pagination}}</div>
+
+<!-- Download code -->
+
+
+
+<script>
+    $(function(){
+        $('a[data-click="add"]').click(function(e){
+            e.preventDefault();
+            var dialog = $('<div id="add_object"></div>').dialog2(
+                {
+                    autoFocus:false
+                    , url:$(this).attr('href')
+                    
+                    , ajaxFormOptions: {
+                        onSuccess: common_ajaxForm_success({
+                            success:function(data){
+                                $(this).dialog2('close');
+                                /*
+                                    write your code
+                                */
+                                window.location.href = '/admin/event';
+                            }
+                        })
+                        , dataType: 'json'
+                    }
+                    
+                }); 
+            dialog.bind('dialog2.content-update', function(e){
+                //add what you want to do after the content update from server
+            });
+        });
+    });
+</script>
+
+
+
+<script>
+    $(function(){
+        $('a[data-click="edit"]').click(function(e){
+            e.preventDefault();
+            var dialog = $('<div id="edit_object"></div>').dialog2(
+                {
+                    autoFocus:false
+                    , url:$(this).attr('href')
+                    
+                    , ajaxFormOptions: {
+                        onSuccess: common_ajaxForm_success({
+                            success:function(data){
+                                $(this).dialog2('close');
+                                /************************
+                                    write your code
+                                ************************/
+                                window.location.href = '/admin/event';
+                            }
+                        })
+                        , dataType: 'json'
+                    }
+                    
+                }); 
+            dialog.bind('dialog2.content-update', function(e){
+                //add what you want to do after the content update from server
+            });
+        });
+    });
+</script>
+
+
+
+<script>
+$(function(){
+    $('a[data-click="delete"]').click(function(e){
+        e.preventDefault();
+        $.post($(this).attr('href')).success(function(data){
+            if(data.success){
+                /************************
+                    write your code
+                ************************/
+                window.location.href = '/admin/event';
+            }else{
+                show_message(data.message, 'error');
+            }
+        });
+    });
+});
+</script>
+
+
+{{end}}
