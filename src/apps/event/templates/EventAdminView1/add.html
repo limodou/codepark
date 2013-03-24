@@ -1,0 +1,18 @@
+{{extend "event_admin_layout.html"}}
+
+{{block content_main}}
+<style>
+#field_title, #field_position {width:80%;}
+</style>
+{{use "jquery", ui=True}}
+
+<h2>添加新的活动</h2>
+
+{{<< form}}
+
+<script>
+$(function(){
+    $('#field_begin_date, #field_end_date').datepicker({ dateFormat: 'yy-mm-dd' });
+});
+</script>
+{{end}}

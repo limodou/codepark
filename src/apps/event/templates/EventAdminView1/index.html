@@ -1,0 +1,23 @@
+{{extend "event_admin_layout.html"}}
+
+{{block content_main}}
+<style>
+.event-item {padding: 8px;}
+.event-title {line-height: 16px; font-size:16px; font-weight: bold;}
+.mute {color:#ccc;}
+</style>
+<div>
+<a href="/admin/event1/add" class="btn btn-primary">増加新活动</a>
+</div>
+
+{{from uliweb.utils.textconvert import text2html}}
+<ul class="unstyled">
+    {{for row in objects:}}
+        <li class="panel event-item">
+            <div class="event-title">{{=row.title}}</div>
+            <div class="event-description">{{<< text2html(row.description)}}</div>
+            <div class="event-tool mute">开始于:{{=row.begin_date}} {{=row.begin_time}} 结束于:{{=row.end_date}}</div>
+        </li>
+    {{pass}}
+</ul>
+{{end}}

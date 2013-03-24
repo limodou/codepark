@@ -44,6 +44,13 @@ if request.user and request.user.is_superuser:
             'link':'/admin/event',
         }
     )
+    menu_items.append(
+        {
+            'name': 'event1_admin',
+            'title':_('Event1'),
+            'link':'/admin/event1',
+        }
+    )
     
 pass
 if request.user:
