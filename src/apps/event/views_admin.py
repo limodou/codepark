@@ -18,8 +18,8 @@ class EventAdminView(object):
         from uliweb.contrib.generic.forms import QueryForm
         
         id = IntField(label=_('ID'))
-        fields = [('id', id),]
-        layout = [('id',)]
+        fields = [('id', id), 'title']
+        layout = [('id', 'title')]
         query = functions.QueryView(self.model, ok_url=url, fields=fields, layout=layout, form_cls=QueryForm)
         return query
         
@@ -39,6 +39,8 @@ class EventAdminView(object):
         
         if c.get('id'):
             condition = (self.model.c.id == c['id']) & condition
+        if c.get('title'):
+            condition = (self.model.c.title.like('%'+c['title']+'%')) & condition
 
         fields_convert_map = {}
         

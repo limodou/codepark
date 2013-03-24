@@ -5,16 +5,6 @@ from uliweb.i18n import ugettext_lazy as _
 from uliweb.utils import date
 
 class AddForm(Form):
-    form_buttons = [Button(value=_('Save'), type='submit', _class="btn btn-primary"),
-        Button(value=_('Reset'), type='reset', _class="btn")]
-    
-    title = UnicodeField(_('Title'), required=True)
-    description = TextField(_('Description'), required=True)
-    begin_date = DateField(_('Begin Date'), required=True)
-    begin_time = TimeField(_('Begin Time'), required=True)
-    end_date = DateField(_('End Date'), required=True)
-    position = UnicodeField(_('Position'))
-    
     def form_validate(self, data):
         error = {}
         

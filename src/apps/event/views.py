@@ -14,22 +14,23 @@ class EventAdminView1(object):
         objects = self.model.all()
         return {'objects':objects}
     
+    index = expose('')(index)
+    
     def add(self):
-        from uliweb.utils import date
         from forms import AddForm
+        from uliweb.utils import date
         
-        form = AddForm()
-        if request.method == 'GET':
-            today = date.today()
-            form.bind({'begin_date':today})
-            return {'form':form}
-        elif request.method == 'POST':
-            #对提交的数据进行校验
-            if form.validate(request.POST):
-                obj = self.model(**form.data)
-                obj.save()
-                return redirect(url_for(self.__class__.index))
-            else:
-                return {'form':form}
+        def pre_save(data):
+            data['creator'] = request.user.id
+            
+        d = {}
+        d['begin_date'] = date.today()
+        d['begin_time'] = date.to_time('9:00')
+        d['end_date'] = date.today()
+            
+        view = functions.AddView(self.model, form_cls=AddForm, data=d,
+            ok_url=url_for(self.__class__.index), pre_save=pre_save)
+        return view.run()
+        
                 
     
