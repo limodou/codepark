@@ -20,7 +20,20 @@ class Event(Model):
     class AddForm:
         fields = ['title', 'description', 'begin_date', 'begin_time', 
             'end_date', 'position']
-            
+           
+    class EditForm:
+        fields = ['title', 'description', 'begin_date', 'begin_time', 
+            'end_date', 'position']
+    
+    class Table:
+        fields = ['title', 'description', 'begin_date', 'begin_time', 
+            'end_date', 'counts', 'position', 'creator']
+        
     @classmethod
     def OnInit(cls):
         Index('event_idx', cls.c.title, cls.c.begin_date)
+        
+class EventRequest(Model):
+    user = Reference('user', verbose_name='报名人', required=True)
+    event = Reference('event', verbose_name='相关活动')
+    create_date = Field(datetime.datetime, verbose_name='报名时间', auto_now_add=True)

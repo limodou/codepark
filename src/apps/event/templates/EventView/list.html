@@ -1,0 +1,49 @@
+{{extend "EventView/event_layout.html"}}
+
+{{block content}}
+<style>
+li.task-item {position:relative;}
+.btn-request {position:absolute;bottom:5px;right:10px;}
+</style>
+<div class="container">
+    <div class="content-outter">
+        <ul class="unstyled">
+            {{for obj in objects:}}
+                <li class="task-item" data-id="{{=obj.id}}">
+                    <div class="panel">
+                        <div class="panel-content">
+                            <h3><a href="/event/view/{{=obj.id}}">{{= obj.title}}</a></h3>
+                            <div class="small"><span class="label">开始时间</span> {{=obj.begin_date}} {{=obj.begin_time}} <span class="label">结束时间</span> {{=obj.end_date}} <span class="label">地点</span> {{=obj.position}} <span class="label">报名人数</span> <span class="counts">{{=obj.counts or 0}}</span></div>
+                            {{if obj.has_register == 'already':}}
+                                <button class="btn btn-request" disabled>已报名</button>
+                            {{else:}}
+                                <button class="btn btn-danger btn-request">申请参加</button>
+                            {{pass}}
+                        </div>
+                    </div>
+                </li>
+            {{pass}}
+        </ul>
+    </div>
+</div>
+
+<script>
+$(function(){
+    $('button.btn-request').click(function(e){
+        var $this = $(this);
+        var parent = $this.parents('li.task-item');
+        $.post('/event/req/'+parent.data('id')).success(function(r){
+            if(r.success){
+                $this.text('已报名');
+                $this.removeClass('btn-danger');
+                $this.prop('disabled', true);
+                parent.find('.counts').text(r.data.counts);
+                show_message(r.message);
+            }else{
+                show_message(r.message, 'error');
+            }
+        });
+    });
+});
+</script>
+{{end}}

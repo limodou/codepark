@@ -1,4 +1,4 @@
-{{extend "event_layout.html"}}
+{{extend "event_admin_layout.html"}}
 
 {{block content_main}}
 {{use "fontawesome"}}
@@ -82,7 +82,6 @@
                 <td>{{<< obj[ f['name'] ] }}</td>
             {{pass}}
             <td>
-                <a href="/admin/event/view/{{=obj['_obj_'].id}}" data-click="view"><i class="icon-eye-open" title="{{=_('View')}}"></i></a> 
                 <a href="/admin/event/edit/{{=obj['_obj_'].id}}" data-click="edit"><i class="icon-edit" title="{{=_('Edit')}}"></i></a> 
                 <a href="/admin/event/delete/{{=obj['_obj_'].id}}" data-click="delete"><i class="icon-remove" title="{{=_('Remove')}}"></i></a>
             </td>

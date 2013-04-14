@@ -1,0 +1,48 @@
+{{extend "EventView/event_layout.html"}}
+
+{{block content}}
+<style>
+.panel-content {position:relative;}
+.btn-request {position:absolute;top:40px;right:10px;}
+.description {margin:10px;border-top:2px solid #999;}
+</style>
+<div class="container">
+    <div class="content-outter">
+        <div class="panel-content">
+            <h3>{{= object.title}}</h3>
+            <div class="small"><span class="label">开始时间</span> {{=object.begin_date}} {{=object.begin_time}} <span class="label">结束时间</span> {{=object.end_date}} <span class="label">地点</span> {{=object.position}} <span class="label">报名人数</span> <span class="counts">{{=object.counts or 0}}</span></div>
+            {{if has_register == 'already':}}
+                <button class="btn btn-request" disabled>已报名</button>
+            {{else:}}
+                <button class="btn btn-danger btn-request">申请参加</button>
+            {{pass}}
+            <div class="description">{{<<object.description}}</div>
+            
+            <h3>报名人员</h3>
+            <ul class="unstyled">
+            {{for user in users:}}
+                <li>{{=user.username}} {{=user.create_date}}
+                </li>
+            {{pass}}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+$(function(){
+    $('button.btn-request').click(function(e){
+        var $this = $(this);
+        $.post('/event/req/{{=object.id}}').success(function(r){
+            if(r.success){
+                show_message(r.message);
+                window.location.reload();
+            }else{
+                show_message(r.message, 'error');
+            }
+        });
+    });
+});
+</script>
+
+{{end}}
